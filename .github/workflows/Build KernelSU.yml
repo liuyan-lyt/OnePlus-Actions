@@ -191,7 +191,7 @@ jobs:
       - name: "📦 Cache & Install Dependencies | 缓存 & 安装构建依赖"
         uses: awalsh128/cache-apt-pkgs-action@latest 
         with: 
-          packages: python3 git curl ccache libelf-dev build-essential flex bison libssl-dev libncurses-dev liblz4-tool zlib1g-dev libxml2-utils rsync unzip gawk dos2unix
+          packages: python3 git curl ccache libelf-dev build-essential flex bison libssl-dev libncurses-dev lz4 zlib1g-dev libxml2-utils rsync unzip gawk dos2unix
           execute_install_scripts: true
          
       - name: "💾 Restore ccache (With SUSFS) | 恢复ccache缓存 (With SUSFS)"
@@ -232,7 +232,7 @@ jobs:
             echo "⚠️ 未找到ccache命令，跳过初始化"
           fi
           # 显示缓存统计
-          ccache -s
+          ccache -s || true
           echo "✅ ccache初始化流程完成"
 
       - name: "📥 Install Repo Tool | 安装Repo工具"
