@@ -152,7 +152,7 @@ on:
 jobs:
   build:
     name: For ${{ github.event.inputs.FEIL }} lz4kd ${{ github.event.inputs.lz4kd }} SUSFS ${{ github.event.inputs.SUSFS }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -161,7 +161,6 @@ jobs:
       
     steps:
       - name: "🚀 Maximize Build Space | 最大化构建空间"
-        if: ${{ github.event.inputs.KERNEL_VERSION == '5.10' || github.event.inputs.KERNEL_VERSION == '5.15' }}
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 8192
