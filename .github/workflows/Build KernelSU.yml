@@ -343,24 +343,6 @@ jobs:
             patch -p1 < 10_enable_susfs_for_ksu.patch || true
           fi
 
-          if [ "${{ github.event.inputs.SUSFS }}" == "On" ]; then
-            echo "===== SUSFS DEBUG START ====="
-            A="$GITHUB_WORKSPACE/kernel_workspace"
-            echo "--- 克隆了哪些 susfs 目录 ---"
-            ls -d "$A"/susfs* 2>/dev/null || true
-            echo "--- susfs4ksu 提交 ---"
-            git -C "$A/susfs4ksu" log -1 --oneline 2>/dev/null || true
-            echo "--- susfs4oki 提交 ---"
-            git -C "$A/susfs4oki" log -1 --oneline 2>/dev/null || true
-            echo "--- 补丁文件是否存在 ---"
-            ls -l "$A"/susfs*/kernel_patches/50_add_susfs_in_gki-*.patch 2>/dev/null || true
-            echo "--- task_mmu 里的 dentry ---"
-            grep -n "dentry" "$A/kernel_platform/common/fs/proc/task_mmu.c" | head -20 || true
-            echo "--- task_mmu 300-345 行 ---"
-            sed -n '300,345p' "$A/kernel_platform/common/fs/proc/task_mmu.c" || true
-            echo "===== SUSFS DEBUG END ====="
-          fi
-
           if [ "${{ github.event.inputs.CVE_2026_43499 }}" = "On" ]; then
             echo "🛡️ 正在应用 CVE-2026-43499 rtmutex 修复补丁..."
             bash "$GITHUB_WORKSPACE/security_patch/apply_cve_2026_43499.sh" "${{ github.event.inputs.KERNEL_VERSION }}" "$GITHUB_WORKSPACE/security_patch"
@@ -451,6 +433,14 @@ jobs:
             fi
             
             patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+            
+            echo "===== SUSFS DEBUG2 START ====="
+            T="$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common/fs/proc/task_mmu.c"
+            echo "--- 关键符号 ---"
+            grep -n "dentry\|spoofed_redirected_name\|bypass_orig_flow\|SUSFS_IS_INODE" "$T" | head -40 || true
+            echo "--- 295-345 行 ---"
+            sed -n '295,345p' "$T" || true
+            echo "===== SUSFS DEBUG2 END ====="
             
             # Revert Fake kernel patch
             if [ "$fake_patched_expand" = 1 ]; then
