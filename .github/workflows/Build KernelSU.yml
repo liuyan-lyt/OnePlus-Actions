@@ -290,11 +290,13 @@ jobs:
           cd kernel_workspace/kernel_platform
 
           echo "🛠️ 正在设置KernelSU..."
-          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/refs/heads/main/kernel/setup.sh" | bash -s v3.3.1
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/refs/heads/main/kernel/setup.sh" | bash -s main
           cd KernelSU
           KSU_VERSION=32680
           echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
           sed -i "s/DKSU_VERSION=16/DKSU_VERSION=${KSU_VERSION}/" kernel/Kbuild
+          sed -i 's/30000 + \$(KSU_GIT_VERSION)/32680 - 0/' kernel/Kbuild
+          sed -i 's/KERNEL_SU_UAPI_VERSION = 6/KERNEL_SU_UAPI_VERSION = 5/' uapi/supercall.h
 
           echo "✅ KernelSU 配置完成"
         
