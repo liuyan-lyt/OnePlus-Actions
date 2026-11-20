@@ -493,8 +493,6 @@ jobs:
                 fi
               fi
             fi            
-            cp ../../kernel_patches/69_hide_stuff.patch ./
-            patch -p1 -F 3 < 69_hide_stuff.patch
             echo "✅ SUSFS patches applied"
           fi
 
