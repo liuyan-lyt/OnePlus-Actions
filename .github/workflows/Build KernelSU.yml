@@ -441,6 +441,7 @@ jobs:
             fi
             
             patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+            
             echo "===== SUSFS PATCH RESULT ====="
             ls *.rej 2>/dev/null || echo "(no .rej files)"
             for f in *.rej; do
@@ -451,19 +452,6 @@ jobs:
             grep -n "dentry" fs/proc/task_mmu.c | head -10 || true
             sha256sum fs/proc/task_mmu.c
             echo "===== SUSFS PATCH RESULT END ====="
-            
-            echo "===== SUSFS DEBUG2 START ====="
-            T="$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common/fs/proc/task_mmu.c"
-            echo "--- 关键符号 ---"
-            grep -n "dentry\|spoofed_redirected_name\|bypass_orig_flow\|SUSFS_IS_INODE" "$T" | head -40 || true
-            echo "--- 295-345 行 ---"
-            sed -n '295,345p' "$T" || true
-            echo "===== SUSFS DEBUG2 END ====="
-            
-            if grep -q "struct dentry \*dentry;" ./fs/proc/task_mmu.c; then
-              echo "⚠️ 发现旧版 open_redirect 代码，修复未初始化变量..."
-              sed -i 's/struct dentry \*dentry;/struct dentry *dentry = NULL;/' ./fs/proc/task_mmu.c
-            fi
             
             # Revert Fake kernel patch
             if [ "$fake_patched_expand" = 1 ]; then
