@@ -345,10 +345,19 @@ jobs:
 
           if [ "${{ github.event.inputs.SUSFS }}" == "On" ]; then
             echo "===== SUSFS DEBUG START ====="
-            git -C ../susfs4ksu log -1 --oneline || true
-            sha256sum ../susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
-            grep -n "dentry" ./fs/proc/task_mmu.c | head -20
-            sed -n '300,345p' ./fs/proc/task_mmu.c
+            A="$GITHUB_WORKSPACE/kernel_workspace"
+            echo "--- 克隆了哪些 susfs 目录 ---"
+            ls -d "$A"/susfs* 2>/dev/null || true
+            echo "--- susfs4ksu 提交 ---"
+            git -C "$A/susfs4ksu" log -1 --oneline 2>/dev/null || true
+            echo "--- susfs4oki 提交 ---"
+            git -C "$A/susfs4oki" log -1 --oneline 2>/dev/null || true
+            echo "--- 补丁文件是否存在 ---"
+            ls -l "$A"/susfs*/kernel_patches/50_add_susfs_in_gki-*.patch 2>/dev/null || true
+            echo "--- task_mmu 里的 dentry ---"
+            grep -n "dentry" "$A/kernel_platform/common/fs/proc/task_mmu.c" | head -20 || true
+            echo "--- task_mmu 300-345 行 ---"
+            sed -n '300,345p' "$A/kernel_platform/common/fs/proc/task_mmu.c" || true
             echo "===== SUSFS DEBUG END ====="
           fi
 
