@@ -337,10 +337,10 @@ jobs:
             cp -r ../SukiSU_patch/other/zram/lz4k_oplus ./common/lib/
           fi
           
-          echo "🔧 应用补丁..."
           if [ "${{ github.event.inputs.SUSFS }}" == "On" ]; then
-            cd ./KernelSU
-            patch -p1 < 10_enable_susfs_for_ksu.patch || true
+            cd ../common
+          elif [ "${{ github.event.inputs.SUSFS }}" == "Off" ]; then
+            cd ./common
           fi
 
           if [ "${{ github.event.inputs.CVE_2026_43499 }}" = "On" ]; then
