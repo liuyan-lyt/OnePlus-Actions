@@ -441,6 +441,16 @@ jobs:
             fi
             
             patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+            echo "===== SUSFS PATCH RESULT ====="
+            ls *.rej 2>/dev/null || echo "(no .rej files)"
+            for f in *.rej; do
+              [ -f "$f" ] || continue
+              echo "===== REJECT: $f ====="
+              head -80 "$f"
+            done
+            grep -n "dentry" fs/proc/task_mmu.c | head -10 || true
+            sha256sum fs/proc/task_mmu.c
+            echo "===== SUSFS PATCH RESULT END ====="
             
             echo "===== SUSFS DEBUG2 START ====="
             T="$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common/fs/proc/task_mmu.c"
