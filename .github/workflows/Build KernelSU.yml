@@ -638,6 +638,10 @@ jobs:
             pwd
             sha256sum fs/proc/task_mmu.c
             grep -n "struct dentry" fs/proc/task_mmu.c || true
+            echo "--- exec.c include ---"
+            grep -n "susfs_def.h" fs/exec.c || echo "NO INCLUDE"
+            echo "--- susfs_def.h def ---"
+            grep -n "susfs_is_current_proc_no_su" include/linux/susfs_def.h || echo "NO DEF"
             echo "===== BUILD CHECK END ====="
             make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC="ccache clang" RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld HOSTLD=ld.lld O=out 'KCFLAGS+=-O2 -Wno-unused-variable -Wno-unused-label -Wno-unused-function' gki_defconfig all
 
