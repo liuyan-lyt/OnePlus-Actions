@@ -450,6 +450,11 @@ jobs:
             sed -n '295,345p' "$T" || true
             echo "===== SUSFS DEBUG2 END ====="
             
+            if grep -q "struct dentry \*dentry;" ./fs/proc/task_mmu.c; then
+              echo "⚠️ 发现旧版 open_redirect 代码，修复未初始化变量..."
+              sed -i 's/struct dentry \*dentry;/struct dentry *dentry = NULL;/' ./fs/proc/task_mmu.c
+            fi
+            
             # Revert Fake kernel patch
             if [ "$fake_patched_expand" = 1 ]; then
               if [ "${{ github.event.inputs.ANDROID_VERSION }}" = "android15" ] && [ "${{ github.event.inputs.KERNEL_VERSION }}" = "6.6" ]; then
