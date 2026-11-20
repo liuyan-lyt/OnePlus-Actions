@@ -441,10 +441,16 @@ jobs:
             fi
             
             patch -p1 -F 0 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+
+            if ! grep -q "linux/susfs_def.h" ./fs/exec.c; then
+              echo "⚠️ exec.c 缺少 susfs_def.h，手动补上"
+              sed -i 's|#include <linux/coredump.h>|#include <linux/coredump.h>\n#include <linux/susfs_def.h>|' ./fs/exec.c
+            fi
+            grep -n "susfs_def.h" ./fs/exec.c
             
             echo "===== SUSFS PATCH RESULT ====="
-            ls *.rej 2>/dev/null || echo "(no .rej files)"
-            for f in *.rej; do
+            find . -name "*.rej" -print
+            for f in $(find . -name "*.rej"); do
               [ -f "$f" ] || continue
               echo "===== REJECT: $f ====="
               head -80 "$f"
