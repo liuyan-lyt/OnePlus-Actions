@@ -344,9 +344,12 @@ jobs:
           fi
 
           if [ "${{ github.event.inputs.SUSFS }}" == "On" ]; then
-            cd ../common
-          elif [ "${{ github.event.inputs.SUSFS }}" == "Off" ]; then
-            cd ./common
+            echo "===== SUSFS DEBUG START ====="
+            git -C ../susfs4ksu log -1 --oneline || true
+            sha256sum ../susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+            grep -n "dentry" ./fs/proc/task_mmu.c | head -20
+            sed -n '300,345p' ./fs/proc/task_mmu.c
+            echo "===== SUSFS DEBUG END ====="
           fi
 
           if [ "${{ github.event.inputs.CVE_2026_43499 }}" = "On" ]; then
