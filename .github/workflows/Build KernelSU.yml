@@ -647,7 +647,7 @@ jobs:
             echo "--- susfs_def.h def ---"
             grep -n "susfs_is_current_proc_no_su" include/linux/susfs_def.h || echo "NO DEF"
             echo "===== BUILD CHECK END ====="
-            make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC="ccache clang" RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld HOSTLD=ld.lld O=out 'KCFLAGS+=-O2 -Wno-unused-variable -Wno-unused-label -Wno-unused-function' gki_defconfig all
+            make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC="ccache clang" RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld HOSTLD=ld.lld O=out 'KCFLAGS+=-O2 -Wno-unused-variable -Wno-unused-label -Wno-unused-function -DKSU_NO_PREINIT' gki_defconfig all
 
           elif [ "${{ github.event.inputs.KERNEL_VERSION }}" == "6.6" ]; then
             export PATH="/usr/lib/ccache:$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/prebuilts/clang/host/linux-x86/clang-r510928/bin:$PATH" 
