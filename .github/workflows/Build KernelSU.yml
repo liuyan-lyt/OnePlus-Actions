@@ -264,9 +264,9 @@ jobs:
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/external/dtc/scripts/setlocalversion
 
           if [ "${{ github.event.inputs.KERNEL_VERSION }}" != "6.6" ]; then
-            sed -i '$s|echo "\$res"|echo "-11-o-g2b8edc801b38"|' kernel_platform/common/scripts/setlocalversion            
-            sed -i '$s|echo "\$res"|echo "-11-o-g2b8edc801b38"|' kernel_platform/msm-kernel/scripts/setlocalversion
-            sed -i '$s|echo "\$res"|echo "-11-o-g2b8edc801b38"|' kernel_platform/external/dtc/scripts/setlocalversion
+            sed -i '$s|echo "\$res"|echo "-android14-11-o-g2b8edc801b38"|' kernel_platform/common/scripts/setlocalversion            
+            sed -i '$s|echo "\$res"|echo "-android14-11-o-g2b8edc801b38"|' kernel_platform/msm-kernel/scripts/setlocalversion
+            sed -i '$s|echo "\$res"|echo "-android14-11-o-g2b8edc801b38"|' kernel_platform/external/dtc/scripts/setlocalversion
           else
             ESCAPED_SUFFIX=$(printf '%s\n' "-${{ github.event.inputs.ANDROID_VERSION }}-oki-xiaoxiaow" | sed 's:[\/&]:\\&:g')
             sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" kernel_platform/common/arch/arm64/configs/gki_defconfig
